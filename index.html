@@ -238,7 +238,7 @@
             gap: 8px;
         }
 
-        .form-row input, .form-row select, .form-row div { flex: 1; }
+        .form-row input { flex: 1; }
 
         .client-form input, .client-form select {
             width: 100%;
@@ -254,7 +254,6 @@
             font-size: 0.75rem;
             color: var(--text-muted);
             margin-bottom: -4px;
-            display: block;
         }
 
         .btn-checkout { background-color: var(--primary-btn); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; }
@@ -343,23 +342,12 @@
                         <input type="text" id="clientDireccion" required placeholder="Calle, número, depto / comuna">
                     </div>
 
-                    <div class="form-row">
-                        <div>
-                            <label>Salsa Preferida *</label>
-                            <select id="clientSalsa" required>
-                                <option value="Soya">🥢 Salsa Soya</option>
-                                <option value="Agridulce">🍯 Salsa Agridulce (Teriyaki)</option>
-                                <option value="Ambas">🥢🍯 Ambas (Mitad y Mitad)</option>
-                                <option value="Sin Salsa">🚫 Sin Salsa</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Método de Pago *</label>
-                            <select id="clientMetodoPago" required>
-                                <option value="Efectivo">💵 Efectivo</option>
-                                <option value="Transferencia">💳 Transferencia Bancaria</option>
-                            </select>
-                        </div>
+                    <div>
+                        <label>Método de Pago *</label>
+                        <select id="clientMetodoPago" required>
+                            <option value="Efectivo">💵 Efectivo</option>
+                            <option value="Transferencia">💳 Transferencia Bancaria</option>
+                        </select>
                     </div>
                 </form>
             </div>
@@ -535,7 +523,6 @@
                 telefono: document.getElementById("clientTelefono").value.trim(),
                 correo: document.getElementById("clientCorreo").value.trim(),
                 direccion: document.getElementById("clientDireccion").value.trim(),
-                salsa: document.getElementById("clientSalsa").value,
                 pago: document.getElementById("clientMetodoPago").value
             };
 
