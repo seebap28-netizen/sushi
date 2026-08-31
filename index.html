@@ -3,15 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <header>
-    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 650px; margin: 0 auto;">
-        <div>
-            <h1 style="text-align: left;">SABORES DE TOKIO</h1>
-            <p style="text-align: left;">Carta Digital de Promociones</p>
-        </div>
-        <a href="cocina.html" style="background-color: var(--card-bg); color: var(--text-muted); border: 1px solid var(--card-border); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 600;">👨‍🍳 Cocina</a>
-    </div>
-</header>
     <title>Menú de Sushi - Sabores de Tokio</title>
     <style>
         :root {
@@ -25,47 +16,69 @@
             --text-muted: #8b949e;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             padding: 16px;
             padding-bottom: 110px;
         }
 
+        /* BARRA SUPERIOR CON BOTÓN ADMIN VISIBLE */
         header {
-            text-align: center;
-            padding: 24px 0 16px;
+            padding: 16px 0;
             border-bottom: 1px solid var(--card-border);
             margin-bottom: 20px;
         }
 
+        .header-container {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            max-width: 650px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
         header h1 {
-            font-size: 1.6rem;
-            letter-spacing: 2px;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
             font-weight: 800;
         }
 
         header p {
             color: var(--accent-color);
-            margin-top: 4px;
+            margin-top: 2px;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        /* Accesos Rápidos */
+        /* Botón Admin resaltado */
+        .btn-admin-header {
+            background-color: #21262d;
+            color: #ffffff !important;
+            border: 1px solid var(--accent-color);
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            white-space: nowrap;
+        }
+
+        .btn-admin-header:hover {
+            background-color: var(--accent-color);
+        }
+
+        /* Navegación Rápida */
         .quick-nav {
             display: flex;
             gap: 8px;
@@ -78,9 +91,7 @@
             scrollbar-width: none;
         }
 
-        .quick-nav::-webkit-scrollbar {
-            display: none;
-        }
+        .quick-nav::-webkit-scrollbar { display: none; }
 
         .quick-nav a {
             background-color: var(--card-bg);
@@ -92,17 +103,9 @@
             font-weight: 600;
             border: 1px solid var(--card-border);
             white-space: nowrap;
-            transition: background-color 0.2s, border-color 0.2s;
         }
 
-        .quick-nav a:hover,
-        .quick-nav a:active {
-            background-color: var(--accent-color);
-            border-color: var(--accent-color);
-            color: #fff;
-        }
-
-        /* Contenedor Principal */
+        /* Categorías y Productos */
         .category-section {
             scroll-margin-top: 20px;
             margin-bottom: 28px;
@@ -118,16 +121,10 @@
             font-size: 1.1rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
-        .menu-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        .menu-list { display: flex; flex-direction: column; gap: 12px; }
 
-        /* Tarjeta de Producto */
         .menu-item {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -138,19 +135,8 @@
             gap: 12px;
         }
 
-        .img-container {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            flex-shrink: 0;
-        }
-
-        .menu-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 8px;
-        }
+        .img-container { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+        .menu-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
 
         .badge-promo {
             position: absolute;
@@ -162,42 +148,13 @@
             border-radius: 4px;
             font-size: 0.6rem;
             font-weight: 800;
-            text-transform: uppercase;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
 
-        .item-content {
-            flex: 1;
-            min-width: 0;
-        }
+        .item-content { flex: 1; min-width: 0; }
+        .item-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 2px; }
+        .item-price { color: var(--accent-color); font-weight: 700; font-size: 0.95rem; }
+        .item-desc { color: var(--text-muted); font-size: 0.78rem; }
 
-        .item-name {
-            font-size: 0.95rem;
-            font-weight: 700;
-            margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .item-price {
-            color: var(--accent-color);
-            font-weight: 700;
-            font-size: 0.95rem;
-            margin-bottom: 4px;
-        }
-
-        .item-desc {
-            color: var(--text-muted);
-            font-size: 0.78rem;
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        /* Controles de Cantidad */
         .cart-controls {
             display: flex;
             align-items: center;
@@ -206,7 +163,6 @@
             border-radius: 8px;
             padding: 3px;
             border: 1px solid var(--card-border);
-            flex-shrink: 0;
         }
 
         .btn-qty {
@@ -216,27 +172,13 @@
             width: 28px;
             height: 28px;
             border-radius: 6px;
-            font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.15s;
         }
 
-        .btn-qty:active {
-            background-color: var(--card-border);
-        }
+        .qty-number { font-weight: 700; font-size: 0.85rem; min-width: 20px; text-align: center; }
 
-        .qty-number {
-            font-weight: 700;
-            font-size: 0.85rem;
-            min-width: 20px;
-            text-align: center;
-        }
-
-        /* Barra Flotante */
+        /* Carrito Flotante */
         .cart-bar {
             position: fixed;
             bottom: 16px;
@@ -251,20 +193,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
             z-index: 1000;
-        }
-
-        .cart-count {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            display: block;
-        }
-
-        .cart-total {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: #fff;
         }
 
         .btn-open-cart {
@@ -274,164 +203,46 @@
             padding: 10px 16px;
             border-radius: 8px;
             font-weight: 700;
-            font-size: 0.9rem;
             cursor: pointer;
         }
 
         /* Modal */
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            padding: 16px;
+            display: none; justify-content: center; align-items: center; z-index: 2000; padding: 16px;
         }
 
         .modal-content {
             background-color: var(--card-bg);
-            border-radius: 14px;
-            width: 100%;
-            max-width: 450px;
-            max-height: 85vh;
-            display: flex;
-            flex-direction: column;
+            border-radius: 14px; width: 100%; max-width: 450px;
+            max-height: 85vh; display: flex; flex-direction: column;
             border: 1px solid var(--card-border);
         }
 
-        .modal-header {
-            padding: 16px;
-            border-bottom: 1px solid var(--card-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h2 {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-
-        .btn-close {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.4rem;
-            cursor: pointer;
-        }
-
-        .modal-body {
-            padding: 16px;
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        .cart-item-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .cart-item-info {
-            flex: 1;
-            margin-right: 12px;
-        }
-
-        .cart-item-title {
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 2px;
-        }
-
-        .cart-item-subtotal {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
-
-        .cart-item-subtotal b {
-            color: var(--accent-color);
-        }
-
-        .modal-footer {
-            padding: 16px;
-            border-top: 1px solid var(--card-border);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .cart-summary-total {
-            display: flex;
-            justify-content: space-between;
-            font-size: 1.1rem;
-            font-weight: 800;
-        }
-
-        .btn-checkout {
-            background-color: var(--primary-btn);
-            color: #000;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        /* Pantalla de Espera / Aprobación */
-        .order-status-screen {
-            text-align: center;
-            padding: 24px 12px;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid var(--card-border);
-            border-top: 5px solid var(--warning-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 16px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .status-icon-approved {
-            font-size: 3.5rem;
-            margin-bottom: 12px;
-        }
-
-        .order-number {
-            background-color: var(--bg-color);
-            border: 1px dashed var(--card-border);
-            border-radius: 8px;
-            padding: 8px;
-            margin: 16px 0;
-            font-family: monospace;
-            font-size: 1.1rem;
-            color: var(--accent-color);
-        }
+        .modal-header { padding: 16px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; }
+        .modal-body { padding: 16px; overflow-y: auto; flex: 1; }
+        .modal-footer { padding: 16px; border-top: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 12px; }
+        .btn-checkout { background-color: var(--primary-btn); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
 
+    <!-- CABECERA CON BOTÓN ADMIN INCLUIDO EN EL HTML DIRECTO -->
     <header>
-        <h1>SABORES DE TOKIO</h1>
-        <p>Carta Digital de Promociones</p>
+        <div class="header-container">
+            <div>
+                <h1>SABORES DE TOKIO</h1>
+                <p>Carta Digital</p>
+            </div>
+            <!-- Botón Admin directo -->
+            <a href="admin.html" class="btn-admin-header">
+                ⚙️ Admin
+            </a>
+        </div>
     </header>
 
+    <!-- Navegación -->
     <div class="quick-nav">
         <a href="#mas-vendidos">🔥 Más Vendidos</a>
         <a href="#promos">🏷️ Promos</a>
@@ -441,34 +252,32 @@
         <a href="#bebestibles">🥤 Bebestibles</a>
     </div>
 
+    <!-- Menú -->
     <div id="sectionsContainer"></div>
 
+    <!-- Carrito Flotante -->
     <div class="cart-bar" id="cartBar" style="display: none;">
-        <div class="cart-info">
-            <span class="cart-count" id="cartCount">0 ítems</span>
-            <span class="cart-total" id="cartTotal">$0</span>
+        <div>
+            <span id="cartCount" style="font-size: 0.8rem; color: var(--text-muted); display: block;">0 ítems</span>
+            <span id="cartTotal" style="font-size: 1.1rem; font-weight: 800; color: #fff;">$0</span>
         </div>
-        <button class="btn-open-cart" onclick="openCartModal()">
-            Ver Carrito 🛒
-        </button>
+        <button class="btn-open-cart" onclick="openCartModal()">Ver Carrito 🛒</button>
     </div>
 
-    <!-- Modal del Carrito -->
+    <!-- Modal Carrito -->
     <div class="modal-overlay" id="cartModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modalTitle">Resumen de tu Pedido</h2>
-                <button class="btn-close" onclick="closeCartModal()">&times;</button>
+                <button style="background:none; border:none; color:var(--text-muted); font-size:1.4rem; cursor:pointer;" onclick="closeCartModal()">&times;</button>
             </div>
             <div class="modal-body" id="modalCartList"></div>
             <div class="modal-footer" id="modalFooter">
-                <div class="cart-summary-total">
+                <div style="display:flex; justify-content:space-between; font-weight:800;">
                     <span>Total:</span>
                     <span id="modalTotal">$0</span>
                 </div>
-                <button class="btn-checkout" onclick="processInternalOrder()">
-                    Confirmar y Enviar Pedido 🛍️
-                </button>
+                <button class="btn-checkout" onclick="processInternalOrder()">Confirmar y Enviar Pedido 🛍️</button>
             </div>
         </div>
     </div>
@@ -484,24 +293,15 @@
         };
 
         const initialPromos = [
-            { id: 1, nombre: "Promo 1: Sake Mix", precio: "$8.900", badge: "TOP VENDIDO", categoria: "mas-vendidos", descripcion: "10 pcs Sake Avocado Roll + 2 Nigiris de Salmón + Bebida.", imagen: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=300&q=80" },
-            { id: 2, nombre: "Promo Duo Tokio", precio: "$14.900", badge: "2x1 PROMO", categoria: "promos", descripcion: "10 pcs Ebi Tempura Roll + 10 pcs Tori Roll + 4 Gyozas.", imagen: "https://images.unsplash.com/photo-1611143669185-af224c5e3252?auto=format&fit=crop&w=300&q=80" },
-            { id: 3, nombre: "Combo Personal Express", precio: "$6.500", badge: "SOLO PARA 1", categoria: "para-uno", descripcion: "10 pcs Rolls a elección (Salmón o Pollo) + Bebida 350ml.", imagen: "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=300&q=80" },
-            { id: 4, nombre: "Handroll Salmón Queso", precio: "$4.200", badge: "CRUNCH", categoria: "handrolls", descripcion: "Cono frito relleno de Salmón, queso crema y cebollín.", imagen: "https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=300&q=80" },
-            { id: 5, nombre: "Gohan Especial Tokio", precio: "$7.900", badge: "RECOMENDADO", categoria: "gohan", descripcion: "Base de arroz sushi, salmón, palta, ciboulette y queso crema.", imagen: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=300&q=80" },
-            { id: 6, nombre: "Coca-Cola / Zero 1.5L", precio: "$2.500", badge: "", categoria: "bebestibles", descripcion: "Bebida desechable de 1.5 Litros a elección.", imagen: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=300&q=80" }
+            { id: 1, nombre: "Promo 1: Sake Mix", precio: "$8.900", badge: "TOP VENDIDO", categoria: "mas-vendidos", descripcion: "10 pcs Sake Avocado Roll + 2 Nigiris + Bebida.", imagen: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=300&q=80" },
+            { id: 2, nombre: "Promo Duo Tokio", precio: "$14.900", badge: "2x1 PROMO", categoria: "promos", descripcion: "10 pcs Ebi Roll + 10 pcs Tori Roll + 4 Gyozas.", imagen: "https://images.unsplash.com/photo-1611143669185-af224c5e3252?auto=format&fit=crop&w=300&q=80" },
+            { id: 3, nombre: "Combo Personal", precio: "$6.500", badge: "SOLO PARA 1", categoria: "para-uno", descripcion: "10 pcs Rolls a elección + Bebida 350ml.", imagen: "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=300&q=80" }
         ];
 
         let cart = {};
-        let orderPollInterval = null;
 
-        function parsePrice(priceStr) {
-            return parseInt(priceStr.replace(/[^0-9]/g, '')) || 0;
-        }
-
-        function formatPrice(number) {
-            return '$' + number.toLocaleString('es-CL');
-        }
+        function parsePrice(p) { return parseInt(p.replace(/[^0-9]/g, '')) || 0; }
+        function formatPrice(n) { return '$' + n.toLocaleString('es-CL'); }
 
         function renderMenu() {
             const container = document.getElementById("sectionsContainer");
@@ -515,218 +315,106 @@
 
             Object.keys(categoriesMap).forEach(catKey => {
                 const itemsInCat = promos.filter(p => (p.categoria || 'promos') === catKey);
-                
                 if (itemsInCat.length > 0) {
-                    const sectionHtml = `
+                    container.innerHTML += `
                         <section class="category-section" id="${catKey}">
                             <div class="category-title">${categoriesMap[catKey]}</div>
                             <div class="menu-list">
-                                ${itemsInCat.map(promo => {
-                                    const qty = cart[promo.id] || 0;
-                                    return `
-                                        <div class="menu-item">
-                                            <div class="img-container">
-                                                <img src="${promo.imagen}" alt="${promo.nombre}">
-                                                ${promo.badge ? `<span class="badge-promo">${promo.badge}</span>` : ''}
-                                            </div>
-                                            <div class="item-content">
-                                                <div class="item-name">${promo.nombre}</div>
-                                                <div class="item-price">${promo.precio}</div>
-                                                <p class="item-desc">${promo.descripcion}</p>
-                                            </div>
-                                            <div class="cart-controls">
-                                                <button class="btn-qty" onclick="updateQty(${promo.id}, -1)">-</button>
-                                                <span class="qty-number" id="qty-${promo.id}">${qty}</span>
-                                                <button class="btn-qty" onclick="updateQty(${promo.id}, 1)">+</button>
-                                            </div>
+                                ${itemsInCat.map(promo => `
+                                    <div class="menu-item">
+                                        <div class="img-container">
+                                            <img src="${promo.imagen}" alt="${promo.nombre}">
+                                            ${promo.badge ? `<span class="badge-promo">${promo.badge}</span>` : ''}
                                         </div>
-                                    `;
-                                }).join('')}
+                                        <div class="item-content">
+                                            <div class="item-name">${promo.nombre}</div>
+                                            <div class="item-price">${promo.precio}</div>
+                                            <p class="item-desc">${promo.descripcion}</p>
+                                        </div>
+                                        <div class="cart-controls">
+                                            <button class="btn-qty" onclick="updateQty(${promo.id}, -1)">-</button>
+                                            <span class="qty-number" id="qty-${promo.id}">${cart[promo.id] || 0}</span>
+                                            <button class="btn-qty" onclick="updateQty(${promo.id}, 1)">+</button>
+                                        </div>
+                                    </div>
+                                `).join('')}
                             </div>
                         </section>
                     `;
-                    container.innerHTML += sectionHtml;
                 }
             });
-
             updateCartBar();
         }
 
         function updateQty(id, change) {
             cart[id] = (cart[id] || 0) + change;
             if (cart[id] <= 0) delete cart[id];
-
             const qtyElem = document.getElementById(`qty-${id}`);
             if (qtyElem) qtyElem.innerText = cart[id] || 0;
-
             updateCartBar();
-            renderModalCart();
         }
 
         function updateCartBar() {
             const promos = JSON.parse(localStorage.getItem("sushiPromos")) || initialPromos;
-            let totalItems = 0;
-            let totalPrice = 0;
-
+            let totalItems = 0, totalPrice = 0;
             for (const id in cart) {
-                const qty = cart[id];
                 const item = promos.find(p => p.id == id);
                 if (item) {
-                    totalItems += qty;
-                    totalPrice += parsePrice(item.precio) * qty;
+                    totalItems += cart[id];
+                    totalPrice += parsePrice(item.precio) * cart[id];
                 }
             }
-
-            const cartBar = document.getElementById("cartBar");
+            const bar = document.getElementById("cartBar");
             if (totalItems > 0) {
-                cartBar.style.display = "flex";
-                document.getElementById("cartCount").innerText = `${totalItems} producto(s)`;
+                bar.style.display = "flex";
+                document.getElementById("cartCount").innerText = `${totalItems} productos`;
                 document.getElementById("cartTotal").innerText = formatPrice(totalPrice);
             } else {
-                cartBar.style.display = "none";
+                bar.style.display = "none";
             }
-        }
-
-        function renderModalCart() {
-            const modalList = document.getElementById("modalCartList");
-            const promos = JSON.parse(localStorage.getItem("sushiPromos")) || initialPromos;
-            let html = "";
-            let totalPrice = 0;
-
-            for (const id in cart) {
-                const qty = cart[id];
-                const item = promos.find(p => p.id == id);
-                if (item) {
-                    const subtotal = parsePrice(item.precio) * qty;
-                    totalPrice += subtotal;
-                    html += `
-                        <div class="cart-item-row">
-                            <div class="cart-item-info">
-                                <div class="cart-item-title">${item.nombre}</div>
-                                <div class="cart-item-subtotal">${item.precio} c/u &bull; <b>${formatPrice(subtotal)}</b></div>
-                            </div>
-                            <div class="cart-controls">
-                                <button class="btn-qty" onclick="updateQty(${item.id}, -1)">-</button>
-                                <span class="qty-number">${qty}</span>
-                                <button class="btn-qty" onclick="updateQty(${item.id}, 1)">+</button>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-
-            modalList.innerHTML = html;
-            document.getElementById("modalTotal").innerText = formatPrice(totalPrice);
         }
 
         function openCartModal() {
-            document.getElementById("modalTitle").innerText = "Resumen de tu Pedido";
-            document.getElementById("modalFooter").style.display = "flex";
-            renderModalCart();
+            const list = document.getElementById("modalCartList");
+            const promos = JSON.parse(localStorage.getItem("sushiPromos")) || initialPromos;
+            let html = "", totalPrice = 0;
+            for (const id in cart) {
+                const item = promos.find(p => p.id == id);
+                if (item) {
+                    const subtotal = parsePrice(item.precio) * cart[id];
+                    totalPrice += subtotal;
+                    html += `<div style="display:flex; justify-between; margin-bottom:10px;">
+                        <div><b>${item.nombre}</b> x${cart[id]}</div>
+                        <div>${formatPrice(subtotal)}</div>
+                    </div>`;
+                }
+            }
+            list.innerHTML = html;
+            document.getElementById("modalTotal").innerText = formatPrice(totalPrice);
             document.getElementById("cartModal").style.display = "flex";
         }
 
-        function closeCartModal() {
-            if (orderPollInterval) clearInterval(orderPollInterval);
-            document.getElementById("cartModal").style.display = "none";
-        }
+        function closeCartModal() { document.getElementById("cartModal").style.display = "none"; }
 
         function processInternalOrder() {
             const orderId = 'ORD-' + Math.floor(1000 + Math.random() * 9000);
             const promos = JSON.parse(localStorage.getItem("sushiPromos")) || initialPromos;
-            let orderItems = [];
-            let totalPrice = 0;
+            let orderItems = [], totalPrice = 0;
 
             for (const id in cart) {
-                const qty = cart[id];
                 const item = promos.find(p => p.id == id);
                 if (item) {
-                    const subtotal = parsePrice(item.precio) * qty;
+                    const subtotal = parsePrice(item.precio) * cart[id];
                     totalPrice += subtotal;
-                    orderItems.push({
-                        nombre: item.nombre,
-                        cantidad: qty,
-                        subtotal: subtotal
-                    });
+                    orderItems.push({ nombre: item.nombre, cantidad: cart[id], subtotal });
                 }
             }
 
-            const orderData = {
-                id: orderId,
-                items: orderItems,
-                total: totalPrice,
-                fecha: new Date().toISOString(),
-                estado: "Pendiente"
-            };
-
-            const existingOrders = JSON.parse(localStorage.getItem("sushiInternalOrders")) || [];
-            existingOrders.push(orderData);
-            localStorage.setItem("sushiInternalOrders", JSON.stringify(existingOrders));
-
-            // Ocultar footer y mostrar la animación de espera
-            document.getElementById("modalFooter").style.display = "none";
-            showWaitingState(orderId);
-
-            // Iniciar consulta periódica (polling) cada 3 segundos
-            if (orderPollInterval) clearInterval(orderPollInterval);
-            orderPollInterval = setInterval(() => checkOrderStatus(orderId), 3000);
-        }
-
-        function showWaitingState(orderId) {
-            document.getElementById("modalTitle").innerText = "Procesando Pedido";
-            document.getElementById("modalCartList").innerHTML = `
-                <div class="order-status-screen">
-                    <div class="spinner"></div>
-                    <h3 style="color: var(--warning-color);">Pendiente de Aprobación</h3>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
-                        Estamos notificando a la cocina. Tu pedido cambiará de estado automáticamente al ser aceptado.
-                    </p>
-                    <div class="order-number">Código: <strong>${orderId}</strong></div>
-                </div>
-            `;
-        }
-
-        function checkOrderStatus(orderId) {
             const orders = JSON.parse(localStorage.getItem("sushiInternalOrders")) || [];
-            const currentOrder = orders.find(o => o.id === orderId);
+            orders.push({ id: orderId, items: orderItems, total: totalPrice, fecha: new Date().toISOString(), estado: "Pendiente" });
+            localStorage.setItem("sushiInternalOrders", JSON.stringify(orders));
 
-            // Si fue rechazado/eliminado
-            if (!currentOrder) {
-                clearInterval(orderPollInterval);
-                document.getElementById("modalTitle").innerText = "Pedido Cancelado";
-                document.getElementById("modalCartList").innerHTML = `
-                    <div class="order-status-screen">
-                        <div class="status-icon-approved">❌</div>
-                        <h3 style="color: var(--accent-color);">Pedido No Aceptado</h3>
-                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
-                            Lo sentimos, la cocina no ha podido recibir tu pedido en este momento.
-                        </p>
-                        <button class="btn-checkout" style="margin-top: 20px;" onclick="clearCartAndClose()">Volver al Menú</button>
-                    </div>
-                `;
-                return;
-            }
-
-            // Si fue aprobado por la cocina
-            if (currentOrder.estado === "Aprobado") {
-                clearInterval(orderPollInterval);
-                document.getElementById("modalTitle").innerText = "¡Pedido Aprobado!";
-                document.getElementById("modalCartList").innerHTML = `
-                    <div class="order-status-screen">
-                        <div class="status-icon-approved">👨‍🍳</div>
-                        <h3 style="color: var(--primary-btn);">¡Tu pedido está en marcha!</h3>
-                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
-                            La cocina ha aceptado tu pedido y ha comenzado a prepararlo.
-                        </p>
-                        <div class="order-number">Código: <strong>${orderId}</strong></div>
-                        <button class="btn-checkout" onclick="clearCartAndClose()">Entendido / Nuevo Pedido</button>
-                    </div>
-                `;
-            }
-        }
-
-        function clearCartAndClose() {
-            if (orderPollInterval) clearInterval(orderPollInterval);
+            alert(`Pedido ${orderId} enviado a Cocina/Admin.`);
             cart = {};
             renderMenu();
             closeCartModal();
