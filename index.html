@@ -38,7 +38,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 650px;
+            max-width: 900px;
             margin: 0 auto;
             width: 100%;
         }
@@ -71,22 +71,21 @@
             gap: 6px;
         }
 
-        /* Navegación Rápida (Corregida para evitar cortes al deslizar) */
-        .quick-nav {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-            padding-right: 16px; /* Aislamiento de margen para que la última pestaña no se corte */
-            margin-bottom: 24px;
-            max-width: 650px;
-            margin-left: auto;
-            margin-right: auto;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
+        /* Navegación Rápida - Solución Notebook y Móvil */
+        .quick-nav-wrapper {
+            max-width: 900px;
+            margin: 0 auto 24px auto;
+            width: 100%;
         }
 
-        .quick-nav::-webkit-scrollbar { display: none; }
+        .quick-nav {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 4px 4px 12px 4px;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+        }
 
         .quick-nav a {
             background-color: var(--card-bg);
@@ -98,14 +97,40 @@
             font-weight: 600;
             border: 1px solid var(--card-border);
             white-space: nowrap;
-            flex-shrink: 0; /* Evita compresión en pantallas pequeñas */
+            flex-shrink: 0;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .quick-nav a:hover {
+            border-color: var(--accent-color);
+            background-color: #21262d;
+        }
+
+        /* Espacio de seguridad al final en pantallas móviles */
+        .quick-nav::after {
+            content: '';
+            padding-right: 20px;
+            flex-shrink: 0;
+        }
+
+        /* Ajuste para Notebooks / Laptops / Tablets Horizontal */
+        @media (min-width: 768px) {
+            .quick-nav {
+                flex-wrap: wrap; /* Muestra todos las opciones en pantalla sin cortar */
+                overflow-x: visible;
+                padding-bottom: 0;
+            }
+
+            .quick-nav::after {
+                display: none;
+            }
         }
 
         /* Categorías y Productos */
         .category-section {
             scroll-margin-top: 20px;
             margin-bottom: 28px;
-            max-width: 650px;
+            max-width: 900px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -119,7 +144,18 @@
             text-transform: uppercase;
         }
 
-        .menu-list { display: flex; flex-direction: column; gap: 12px; }
+        .menu-list { 
+            display: grid; 
+            grid-template-columns: 1fr;
+            gap: 12px; 
+        }
+
+        /* Cuadrícula de 2 columnas en Notebooks */
+        @media (min-width: 768px) {
+            .menu-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
 
         .menu-item {
             background-color: var(--card-bg);
@@ -181,7 +217,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: calc(100% - 32px);
-            max-width: 500px;
+            max-width: 600px;
             background-color: #1c2128;
             border: 1px solid var(--primary-btn);
             border-radius: 12px;
@@ -211,7 +247,7 @@
 
         .modal-content {
             background-color: var(--card-bg);
-            border-radius: 14px; width: 100%; max-width: 480px;
+            border-radius: 14px; width: 100%; max-width: 500px;
             max-height: 90vh; display: flex; flex-direction: column;
             border: 1px solid var(--card-border);
         }
@@ -300,13 +336,15 @@
         </div>
     </header>
 
-    <div class="quick-nav">
-        <a href="#mas-vendidos">🔥 Más Vendidos</a>
-        <a href="#promos">🏷️ Promos</a>
-        <a href="#para-uno">👤 Para Uno</a>
-        <a href="#handrolls">🌯 Handrolls</a>
-        <a href="#gohan">🍚 Gohan</a>
-        <a href="#bebestibles">🥤 Bebestibles</a>
+    <div class="quick-nav-wrapper">
+        <div class="quick-nav">
+            <a href="#mas-vendidos">🔥 Más Vendidos</a>
+            <a href="#promos">🏷️ Promos</a>
+            <a href="#para-uno">👤 Para Uno</a>
+            <a href="#handrolls">🌯 Handrolls</a>
+            <a href="#gohan">🍚 Gohan</a>
+            <a href="#bebestibles">🥤 Bebestibles</a>
+        </div>
     </div>
 
     <div id="sectionsContainer"></div>
