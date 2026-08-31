@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Cocina - Sabores de Tokio</title>
+    <style>
+        :root {
+            --bg-color: #0d0f12;
+            --card-bg: #161b22;
+            --card-border: #21262d;
+            --accent-color: #ff4757;
+            --primary-btn: #3fb950;
+            --warning-color: #d29922;
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Pantalla de Login */
+        .login-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .login-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 32px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+        }
+
+        .login-card h2 {
+            margin-bottom: 8px;
+            font-size: 1.4rem;
+        }
+
+        .login-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .login-error {
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            margin-top: 12px;
+            display: none;
+        }
+
+        /* Panel de Cocina */
+        .kitchen-panel {
+            display: none;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-header {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .btn-header:hover {
+            border-color: var(--text-muted);
+        }
+
+        .btn-logout {
+            border-color: rgba(255, 71, 87, 0.4);
+            color: var(--accent-color);
+        }
+
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .order-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .order-id {
+            font-weight: 800;
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+        }
+
+        .order-status {
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+        }
+
+        .status-pendiente {
+            background-color: rgba(210, 153, 34, 0.2);
+            color: var(--warning-color);
+            border: 1px solid var(--warning-color);
+        }
+
+        .status-aprobado {
+            background-color: rgba(63, 185, 80, 0.2);
+            color: var(--primary-btn);
+            border: 1px solid var(--primary-btn);
+        }
+
+        .order-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .order-items {
+            list-style: none;
+            margin-bottom: 16px;
+            flex: 1;
+        }
+
+        .order-items li {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 800;
+            font-size: 1rem;
+            padding-top: 10px;
+            border-top: 1px solid var(--card-border);
+            margin-bottom: 16px;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 8px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .btn-approve {
+            background-color: var(--primary-btn);
+            color: #000;
+        }
+
+        .btn-reject {
+            background-color: var(--accent-color);
+            color: #fff;
+        }
+
+        .empty-state {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Pantalla de Login -->
+    <div class="login-wrapper" id="loginWrapper">
+        <div class="login-card">
+            <h2>👨‍🍳 Acceso Cocina</h2>
+            <p>Ingresa tus credenciales para administrar pedidos</p>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" class="form-control" placeholder="admin" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••" required>
+                </div>
+                <button type="submit" class="btn-login">Ingresar</button>
+                <div class="login-error" id="loginError">Usuario o contraseña incorrectos.</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Panel Principal (Oculto por defecto) -->
+    <div class="kitchen-panel" id="kitchenPanel">
+        <header>
+            <h1>👨‍🍳 Pedidos en Cocina</h1>
+            <div class="header-actions">
+                <button class="btn-header" onclick="renderOrders()">Actualizar 🔄</button>
+                <button class="btn-header btn-logout" onclick="logout()">Salir 🚪</button>
+            </div>
+        </header>
+
+        <div class="orders-grid" id="ordersContainer"></div>
+    </div>
+
+    <script>
+        const CREDENTIALS = {
+            user: "admin",
+            pass: "1234"
+        };
+
+        let autoRefreshInterval = null;
+
+        function checkAuth() {
+            const isAuth = sessionStorage.getItem("kitchen_authenticated");
+            if (isAuth === "true") {
+                document.getElementById("loginWrapper").style.display = "none";
+                document.getElementById("kitchenPanel").style.display = "block";
+                renderOrders();
+                if (!autoRefreshInterval) {
+                    autoRefreshInterval = setInterval(renderOrders, 10000);
+                }
+            } else {
+                document.getElementById("loginWrapper").style.display = "flex";
+                document.getElementById("kitchenPanel").style.display = "none";
+                if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const userIn = document.getElementById("username").value.trim();
+            const passIn = document.getElementById("password").value.trim();
+            const errorElem = document.getElementById("loginError");
+
+            if (userIn === CREDENTIALS.user && passIn === CREDENTIALS.pass) {
+                sessionStorage.setItem("kitchen_authenticated", "true");
+                errorElem.style.display = "none";
+                checkAuth();
+            } else {
+                errorElem.style.display = "block";
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem("kitchen_authenticated");
+            checkAuth();
+        }
+
+        function formatPrice(number) {
+            return '$' + number.toLocaleString('es-CL');
+        }
+
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' - ' + date.toLocaleDateString();
+        }
+
+        function renderOrders() {
+            const container = document.getElementById("ordersContainer");
+            const orders = JSON.parse(localStorage.getItem("sushiInternalOrders")) || [];
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h2>No hay pedidos registrados</h2>
+                        <p>Los nuevos pedidos realizados desde la carta aparecerán aquí.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            orders.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+            container.innerHTML = orders.map(order => {
+                const status = order.estado || 'Pendiente';
+                const statusClass = status === 'Aprobado' ? 'status-aprobado' : 'status-pendiente';
+
+                return `
+                    <div class="order-card">
+                        <div>
+                            <div class="order-header">
+                                <span class="order-id">${order.id}</span>
+                                <span class="order-status ${statusClass}">${status}</span>
+                            </div>
+                            <div class="order-date">📅 ${formatDate(order.fecha)}</div>
+                            <ul class="order-items">
+                                ${order.items.map(item => `
+                                    <li>
+                                        <span><b>${item.cantidad}x</b> ${item.nombre}</span>
+                                        <span>${formatPrice(item.subtotal)}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="order-total">
+                                <span>Total:</span>
+                                <span>${formatPrice(order.total)}</span>
+                            </div>
+                            <div class="order-actions">
+                                ${status === 'Pendiente' ? `
+                                    <button class="btn-action btn-approve" onclick="updateOrderStatus('${order.id}', 'Aprobado')">Aprobar ✅</button>
+                                    <button class="btn-action btn-reject" onclick="deleteOrder('${order.id}')">Rechazar ❌</button>
+                                ` : `
+                                    <button class="btn-action btn-approve" style="opacity: 0.6; cursor: default;" disabled>En Preparación 🍳</button>
+                                    <button class="btn-action btn-reject" onclick="deleteOrder('${order.id}')">Eliminar 🗑️</button>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateOrderStatus(id, newStatus) {
+            let orders = JSON.parse(localStorage.getItem("sushiInternalOrders")) || [];
+            orders = orders.map(order => {
+                if (order.id === id) {
+                    order.estado = newStatus;
+                }
+                return order;
+            });
+            localStorage.setItem("sushiInternalOrders", JSON.stringify(orders));
+            renderOrders();
+        }
+
+        function deleteOrder(id) {
+            if (confirm("¿Estás seguro de eliminar o rechazar este pedido?")) {
+                let orders = JSON.parse(localStorage.getItem("sushiInternalOrders")) || [];
+                orders = orders.filter(order => order.id !== id);
+                localStorage.setItem("sushiInternalOrders", JSON.stringify(orders));
+                renderOrders();
+            }
+        }
+
+        checkAuth();
+    </script>
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Menú Sushi</title>
+    <style>
+        :root {
+            --bg-color: #0f1115;
+            --card-bg: #1a202c;
+            --accent-color: #e53e3e;
+            --wsp-color: #25d366;
+            --text-color: #f7fafc;
+            --text-secondary: #a0aec0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1, h2 { color: var(--accent-color); }
+
+        /* Pantalla de Login */
+        .login-container {
+            max-width: 380px;
+            margin: 80px auto;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #2d3748;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .login-container h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            color: #fc8181;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        /* Formulario y Tarjetas */
+        .form-card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #2d3748;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #2d3748;
+            background-color: var(--bg-color);
+            color: #fff;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover { opacity: 0.9; }
+
+        .btn-wsp-save {
+            background-color: var(--wsp-color);
+            color: #000;
+            width: auto;
+        }
+
+        .btn-cancel {
+            background-color: #4a5568;
+            margin-top: 10px;
+        }
+
+        .header-admin {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-logout {
+            background-color: #4a5568;
+            width: auto;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+        /* Tabla de Productos */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #2d3748;
+        }
+
+        .admin-table th { background-color: #2d3748; }
+
+        .btn-edit { background-color: #3182ce; padding: 5px 10px; font-size: 0.8rem; width: auto; }
+        .btn-delete { background-color: var(--accent-color); padding: 5px 10px; font-size: 0.8rem; width: auto; }
+        .thumb-img { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+        
+        .badge-cat {
+            background-color: #2d3748;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. PANTALLA DE LOG IN -->
+    <div id="loginScreen" class="login-container">
+        <h2>Acceso Administrador</h2>
+        <div id="loginError" class="error-message">Usuario o contraseña incorrectos</div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Usuario</label>
+                <input type="text" id="userInput" required placeholder="Ingresa usuario">
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="passInput" required placeholder="Ingresa contraseña">
+            </div>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+    </div>
+
+    <!-- 2. PANEL DE ADMINISTRACIÓN -->
+    <div id="adminPanel" style="display: none;">
+        <div class="header-admin">
+            <h1>Panel de Administración</h1>
+            <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+        </div>
+
+        <!-- Ajuste de WhatsApp -->
+        <div class="form-card">
+            <h2>Configuración de WhatsApp</h2>
+            <div class="form-group">
+                <label>Número para recibir pedidos (con código de país sin el signo +)</label>
+                <input type="text" id="wspNumberInput" placeholder="Ej: 56912345678">
+            </div>
+            <button class="btn-wsp-save" onclick="saveWspNumber()">Guardar Número</button>
+        </div>
+
+        <!-- Formulario CRUD de Productos -->
+        <div class="form-card">
+            <h2 id="formTitle">Agregar Nuevo Producto</h2>
+            <form id="promoForm">
+                <input type="hidden" id="promoId">
+                
+                <div class="form-group">
+                    <label>Categoría</label>
+                    <select id="categoria" required>
+                        <option value="mas-vendidos">🔥 Más Vendidos</option>
+                        <option value="promos">🏷️ Promos</option>
+                        <option value="para-uno">👤 Para Uno</option>
+                        <option value="handrolls">🌯 Handrolls</option>
+                        <option value="gohan">🍚 Gohan</option>
+                        <option value="bebestibles">🥤 Bebestibles</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Nombre del Producto</label>
+                    <input type="text" id="nombre" required placeholder="Ej: Promo 3: Combo Tokio">
+                </div>
+
+                <div class="form-group">
+                    <label>Precio</label>
+                    <input type="text" id="precio" required placeholder="Ej: $12.900">
+                </div>
+
+                <div class="form-group">
+                    <label>Etiqueta / Badge (Opcional)</label>
+                    <input type="text" id="badge" placeholder="Ej: 20% OFF, RECOMENDADO">
+                </div>
+
+                <div class="form-group">
+                    <label>URL de la Imagen</label>
+                    <input type="url" id="imagen" required placeholder="https://ejemplo.com/imagen.jpg">
+                </div>
+
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="descripcion" rows="3" required placeholder="Detalla los ingredientes y piezas..."></textarea>
+                </div>
+
+                <button type="submit" id="btnSave">Guardar Producto</button>
+                <button type="button" class="btn-cancel" id="btnCancel" onclick="resetForm()" style="display:none;">Cancelar</button>
+            </form>
+        </div>
+
+        <!-- Tabla de Productos -->
+        <h2>Productos en Carta</h2>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Categoría</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="adminTableBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        // Credenciales de Acceso
+        const ADMIN_USER = "admin";
+        const ADMIN_PASS = "sushi123";
+
+        const categoryLabels = {
+            'mas-vendidos': '🔥 Más Vendidos',
+            'promos': '🏷️ Promos',
+            'para-uno': '👤 Para Uno',
+            'handrolls': '🌯 Handrolls',
+            'gohan': '🍚 Gohan',
+            'bebestibles': '🥤 Bebestibles'
+        };
+
+        // Verificación de Autenticación
+        function checkAuth() {
+            const isAuth = sessionStorage.getItem("sushiAdminAuth");
+            if (isAuth === "true") {
+                document.getElementById("loginScreen").style.display = "none";
+                document.getElementById("adminPanel").style.display = "block";
+                loadWspNumber();
+                renderAdminTable();
+            } else {
+                document.getElementById("loginScreen").style.display = "block";
+                document.getElementById("adminPanel").style.display = "none";
+            }
+        }
+
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const user = document.getElementById("userInput").value;
+            const pass = document.getElementById("passInput").value;
+
+            if (user === ADMIN_USER && pass === ADMIN_PASS) {
+                sessionStorage.setItem("sushiAdminAuth", "true");
+                document.getElementById("loginError").style.display = "none";
+                checkAuth();
+            } else {
+                document.getElementById("loginError").style.display = "block";
+            }
+        });
+
+        function logout() {
+            sessionStorage.removeItem("sushiAdminAuth");
+            checkAuth();
+        }
+
+        // Configuración de WhatsApp
+        function loadWspNumber() {
+            const savedNum = localStorage.getItem("sushiWspNumber") || "56912345678";
+            document.getElementById("wspNumberInput").value = savedNum;
+        }
+
+        function saveWspNumber() {
+            const num = document.getElementById("wspNumberInput").value.trim();
+            if (num) {
+                localStorage.setItem("sushiWspNumber", num);
+                alert("Número de WhatsApp guardado correctamente.");
+            }
+        }
+
+        // Gestión CRUD
+        let promos = JSON.parse(localStorage.getItem("sushiPromos")) || [];
+
+        function saveToStorage() {
+            localStorage.setItem("sushiPromos", JSON.stringify(promos));
+            renderAdminTable();
+        }
+
+        function renderAdminTable() {
+            const tbody = document.getElementById("adminTableBody");
+            tbody.innerHTML = promos.map(promo => `
+                <tr>
+                    <td><img src="${promo.imagen}" class="thumb-img"></td>
+                    <td><span class="badge-cat">${categoryLabels[promo.categoria] || 'Promos'}</span></td>
+                    <td><b>${promo.nombre}</b></td>
+                    <td>${promo.precio}</td>
+                    <td>
+                        <button class="btn-edit" onclick="editPromo(${promo.id})">Editar</button>
+                        <button class="btn-delete" onclick="deletePromo(${promo.id})">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        document.getElementById("promoForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const id = document.getElementById("promoId").value;
+            const newPromo = {
+                id: id ? parseInt(id) : Date.now(),
+                categoria: document.getElementById("categoria").value,
+                nombre: document.getElementById("nombre").value,
+                precio: document.getElementById("precio").value,
+                badge: document.getElementById("badge").value,
+                imagen: document.getElementById("imagen").value,
+                descripcion: document.getElementById("descripcion").value
+            };
+
+            if (id) {
+                promos = promos.map(p => p.id === parseInt(id) ? newPromo : p);
+            } else {
+                promos.push(newPromo);
+            }
+
+            saveToStorage();
+            resetForm();
+        });
+
+        function editPromo(id) {
+            const promo = promos.find(p => p.id === id);
+            if (!promo) return;
+
+            document.getElementById("promoId").value = promo.id;
+            document.getElementById("categoria").value = promo.categoria || "promos";
+            document.getElementById("nombre").value = promo.nombre;
+            document.getElementById("precio").value = promo.precio;
+            document.getElementById("badge").value = promo.badge || '';
+            document.getElementById("imagen").value = promo.imagen;
+            document.getElementById("descripcion").value = promo.descripcion;
+
+            document.getElementById("formTitle").innerText = "Modificar Producto";
+            document.getElementById("btnSave").innerText = "Actualizar Producto";
+            document.getElementById("btnCancel").style.display = "block";
+        }
+
+        function deletePromo(id) {
+            if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
+                promos = promos.filter(p => p.id !== id);
+                saveToStorage();
+            }
+        }
+
+        function resetForm() {
+            document.getElementById("promoForm").reset();
+            document.getElementById("promoId").value = "";
+            document.getElementById("formTitle").innerText = "Agregar Nuevo Producto";
+            document.getElementById("btnSave").innerText = "Guardar Producto";
+            document.getElementById("btnCancel").style.display = "none";
+        }
+
+        // Inicialización
+        checkAuth();
+    </script>
+</body>
+</html>
