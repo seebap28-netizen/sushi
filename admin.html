@@ -10,8 +10,10 @@
             --card-bg: #1a202c;
             --accent-color: #e53e3e;
             --wsp-color: #25d366;
+            --approve-color: #3fb950;
             --text-color: #f7fafc;
             --text-secondary: #a0aec0;
+            --border-color: #2d3748;
         }
 
         body {
@@ -32,7 +34,7 @@
             background-color: var(--card-bg);
             padding: 30px;
             border-radius: 12px;
-            border: 1px solid #2d3748;
+            border: 1px solid var(--border-color);
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             text-align: center;
         }
@@ -54,7 +56,7 @@
             background-color: var(--card-bg);
             padding: 20px;
             border-radius: 10px;
-            border: 1px solid #2d3748;
+            border: 1px solid var(--border-color);
             margin-bottom: 25px;
         }
 
@@ -74,7 +76,7 @@
             width: 100%;
             padding: 10px;
             border-radius: 6px;
-            border: 1px solid #2d3748;
+            border: 1px solid var(--border-color);
             background-color: var(--bg-color);
             color: #fff;
             box-sizing: border-box;
@@ -115,14 +117,94 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            gap: 10px;
         }
 
-        .btn-logout {
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-header-action {
             background-color: #4a5568;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-header-action:hover { background-color: #718096; }
+
+        .btn-logout {
+            background-color: var(--accent-color);
             width: auto;
             padding: 8px 16px;
             font-size: 0.85rem;
         }
+
+        /* Gestor de Pedidos */
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .order-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .order-card-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .order-id { color: var(--accent-color); }
+
+        .order-status {
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background-color: #d29922;
+            color: #000;
+            font-weight: 800;
+        }
+
+        .order-items-list {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .order-total {
+            font-weight: bold;
+            text-align: right;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .btn-approve { background-color: var(--approve-color); color: #000; font-size: 0.8rem; }
+        .btn-reject { background-color: var(--accent-color); color: #fff; font-size: 0.8rem; }
 
         /* Tabla de Productos */
         .admin-table {
@@ -136,7 +218,7 @@
         .admin-table th, .admin-table td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #2d3748;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .admin-table th { background-color: #2d3748; }
@@ -177,7 +259,18 @@
     <div id="adminPanel" style="display: none;">
         <div class="header-admin">
             <h1>Panel de Administración</h1>
-            <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+            <div class="header-actions">
+                <a href="index.html" class="btn-header-action">🍣 Ver Menú</a>
+                <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <!-- Monitor de Pedidos de Cocina -->
+        <div class="form-card">
+            <h2>🛎️ Pedidos Entrantes (Cocina)</h2>
+            <div id="ordersContainer" class="orders-grid">
+                <!-- Se renderizan automáticamente los pedidos aquí -->
+            </div>
         </div>
 
         <!-- Ajuste de WhatsApp -->
@@ -268,6 +361,8 @@
             'bebestibles': '🥤 Bebestibles'
         };
 
+        let ordersPollInterval = null;
+
         // Verificación de Autenticación
         function checkAuth() {
             const isAuth = sessionStorage.getItem("sushiAdminAuth");
@@ -276,9 +371,15 @@
                 document.getElementById("adminPanel").style.display = "block";
                 loadWspNumber();
                 renderAdminTable();
+                renderOrders();
+                
+                // Iniciar escucha de pedidos cada 2.5 segundos
+                if (ordersPollInterval) clearInterval(ordersPollInterval);
+                ordersPollInterval = setInterval(renderOrders, 2500);
             } else {
                 document.getElementById("loginScreen").style.display = "block";
                 document.getElementById("adminPanel").style.display = "none";
+                if (ordersPollInterval) clearInterval(ordersPollInterval);
             }
         }
 
@@ -315,7 +416,55 @@
             }
         }
 
-        // Gestión CRUD
+        // Gestión de Pedidos Entrantes
+        function renderOrders() {
+            const ordersContainer = document.getElementById("ordersContainer");
+            const orders = JSON.parse(localStorage.getItem("sushiInternalOrders")) || [];
+
+            if (orders.length === 0) {
+                ordersContainer.innerHTML = `<p style="color: var(--text-secondary); grid-column: 1/-1;">No hay pedidos pendientes en este momento.</p>`;
+                return;
+            }
+
+            ordersContainer.innerHTML = orders.map(order => `
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <span class="order-id">${order.id}</span>
+                        <span class="order-status" style="background-color: ${order.estado === 'Aprobado' ? '#3fb950' : '#d29922'}">
+                            ${order.estado}
+                        </span>
+                    </div>
+                    <ul class="order-items-list">
+                        ${order.items.map(i => `<li>${i.cantidad}x ${i.nombre}</li>`).join('')}
+                    </ul>
+                    <div class="order-total">$${order.total.toLocaleString('es-CL')}</div>
+                    ${order.estado === 'Pendiente' ? `
+                        <div class="order-actions">
+                            <button class="btn-approve" onclick="updateOrderStatus('${order.id}', 'Aprobado')">Aprobar</button>
+                            <button class="btn-reject" onclick="deleteOrder('${order.id}')">Rechazar</button>
+                        </div>
+                    ` : `
+                        <button class="btn-reject" style="background-color: #4a5568;" onclick="deleteOrder('${order.id}')">Limpiar</button>
+                    `}
+                </div>
+            `).join('');
+        }
+
+        function updateOrderStatus(orderId, status) {
+            let orders = JSON.parse(localStorage.getItem("sushiInternalOrders")) || [];
+            orders = orders.map(o => o.id === orderId ? { ...o, estado: status } : o);
+            localStorage.setItem("sushiInternalOrders", JSON.stringify(orders));
+            renderOrders();
+        }
+
+        function deleteOrder(orderId) {
+            let orders = JSON.parse(localStorage.getItem("sushiInternalOrders")) || [];
+            orders = orders.filter(o => o.id !== orderId);
+            localStorage.setItem("sushiInternalOrders", JSON.stringify(orders));
+            renderOrders();
+        }
+
+        // Gestión CRUD de Productos
         let promos = JSON.parse(localStorage.getItem("sushiPromos")) || [];
 
         function saveToStorage() {
