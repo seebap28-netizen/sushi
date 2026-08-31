@@ -9,7 +9,6 @@
             --bg-color: #0f1115;
             --card-bg: #1a202c;
             --accent-color: #e53e3e;
-            --wsp-color: #25d366;
             --approve-color: #3fb950;
             --text-color: #f7fafc;
             --text-secondary: #a0aec0;
@@ -21,7 +20,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             padding: 20px;
-            max-width: 900px;
+            max-width: 950px;
             margin: 0 auto;
         }
 
@@ -101,12 +100,6 @@
 
         button:hover { opacity: 0.9; }
 
-        .btn-wsp-save {
-            background-color: var(--wsp-color);
-            color: #000;
-            width: auto;
-        }
-
         .btn-cancel {
             background-color: #4a5568;
             margin-top: 10px;
@@ -146,12 +139,12 @@
             font-size: 0.85rem;
         }
 
-        /* Gestor de Pedidos */
+        /* Monitor de Pedidos Cocina */
         .orders-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
         }
 
         .order-card {
@@ -167,12 +160,13 @@
         .order-card-header {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
             font-weight: bold;
         }
 
-        .order-id { color: var(--accent-color); }
+        .order-id { color: var(--accent-color); font-size: 0.95rem; }
 
         .order-status {
             font-size: 0.75rem;
@@ -182,6 +176,18 @@
             color: #000;
             font-weight: 800;
         }
+
+        .client-info-box {
+            background-color: var(--bg-color);
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: var(--text-color);
+            line-height: 1.4;
+            border: 1px solid var(--border-color);
+        }
+
+        .client-info-box strong { color: var(--accent-color); }
 
         .order-items-list {
             font-size: 0.85rem;
@@ -193,8 +199,9 @@
         .order-total {
             font-weight: bold;
             text-align: right;
-            font-size: 1rem;
+            font-size: 1.05rem;
             color: #fff;
+            margin-top: 4px;
         }
 
         .order-actions {
@@ -265,15 +272,14 @@
             </div>
         </div>
 
-        <!-- Monitor de Pedidos de Cocina -->
+        <!-- Monitor de Pedidos de Cocina en Tiempo Real -->
         <div class="form-card">
-            <h2>🛎️ Pedidos Entrantes (Cocina)</h2>
+            <h2>🛎️ Pedidos Entrantes (Monitor Cocina)</h2>
             <div id="ordersContainer" class="orders-grid">
-                <!-- Se renderizan automáticamente los pedidos aquí -->
+                <!-- Se renderizan automáticamente los pedidos -->
             </div>
         </div>
 
-        
         <!-- Formulario CRUD de Productos -->
         <div class="form-card">
             <h2 id="formTitle">Agregar Nuevo Producto</h2>
@@ -354,19 +360,17 @@
 
         let ordersPollInterval = null;
 
-        // Verificación de Autenticación
         function checkAuth() {
             const isAuth = sessionStorage.getItem("sushiAdminAuth");
             if (isAuth === "true") {
                 document.getElementById("loginScreen").style.display = "none";
                 document.getElementById("adminPanel").style.display = "block";
-                loadWspNumber();
                 renderAdminTable();
                 renderOrders();
                 
-                // Iniciar escucha de pedidos cada 2.5 segundos
+                // Actualiza el monitor de cocina en tiempo real (cada 2 segundos)
                 if (ordersPollInterval) clearInterval(ordersPollInterval);
-                ordersPollInterval = setInterval(renderOrders, 2500);
+                ordersPollInterval = setInterval(renderOrders, 2000);
             } else {
                 document.getElementById("loginScreen").style.display = "block";
                 document.getElementById("adminPanel").style.display = "none";
@@ -393,21 +397,7 @@
             checkAuth();
         }
 
-        // Configuración de WhatsApp
-        function loadWspNumber() {
-            const savedNum = localStorage.getItem("sushiWspNumber") || "56912345678";
-            document.getElementById("wspNumberInput").value = savedNum;
-        }
-
-        function saveWspNumber() {
-            const num = document.getElementById("wspNumberInput").value.trim();
-            if (num) {
-                localStorage.setItem("sushiWspNumber", num);
-                alert("Número de WhatsApp guardado correctamente.");
-            }
-        }
-
-        // Gestión de Pedidos Entrantes
+        // Gestión del Monitor de Pedidos de Cocina
         function renderOrders() {
             const ordersContainer = document.getElementById("ordersContainer");
             const orders = JSON.parse(localStorage.getItem("sushiInternalOrders")) || [];
@@ -417,7 +407,9 @@
                 return;
             }
 
-            ordersContainer.innerHTML = orders.map(order => `
+            ordersContainer.innerHTML = orders.map(order => {
+                const c = order.cliente || {};
+                return `
                 <div class="order-card">
                     <div class="order-card-header">
                         <span class="order-id">${order.id}</span>
@@ -425,10 +417,22 @@
                             ${order.estado}
                         </span>
                     </div>
+
+                    <!-- Datos del cliente entregados desde index.html -->
+                    <div class="client-info-box">
+                        <div><strong>Cliente:</strong> ${c.nombre || ''} ${c.apellido || ''}</div>
+                        <div><strong>Teléfono:</strong> ${c.telefono || '-'}</div>
+                        <div><strong>Correo:</strong> ${c.correo || '-'}</div>
+                        <div><strong>Dirección:</strong> ${c.direccion || '-'}</div>
+                        <div><strong>Pago:</strong> ${c.pago || '-'}</div>
+                    </div>
+
                     <ul class="order-items-list">
-                        ${order.items.map(i => `<li>${i.cantidad}x ${i.nombre}</li>`).join('')}
+                        ${order.items.map(i => `<li><b>${i.cantidad}x</b> ${i.nombre}</li>`).join('')}
                     </ul>
+
                     <div class="order-total">$${order.total.toLocaleString('es-CL')}</div>
+
                     ${order.estado === 'Pendiente' ? `
                         <div class="order-actions">
                             <button class="btn-approve" onclick="updateOrderStatus('${order.id}', 'Aprobado')">Aprobar</button>
@@ -438,7 +442,7 @@
                         <button class="btn-reject" style="background-color: #4a5568;" onclick="deleteOrder('${order.id}')">Limpiar</button>
                     `}
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function updateOrderStatus(orderId, status) {
@@ -455,7 +459,7 @@
             renderOrders();
         }
 
-        // Gestión CRUD de Productos
+        // CRUD de Productos
         let promos = JSON.parse(localStorage.getItem("sushiPromos")) || [];
 
         function saveToStorage() {
@@ -534,7 +538,6 @@
             document.getElementById("btnCancel").style.display = "none";
         }
 
-        // Inicialización
         checkAuth();
     </script>
 </body>

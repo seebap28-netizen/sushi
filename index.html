@@ -11,7 +11,6 @@
             --card-border: #21262d;
             --accent-color: #ff4757;
             --primary-btn: #3fb950;
-            --wsp-btn: #25d366;
             --warning-color: #d29922;
             --text-main: #f0f6fc;
             --text-muted: #8b949e;
@@ -257,8 +256,7 @@
             margin-bottom: -4px;
         }
 
-        .btn-checkout { background-color: var(--primary-btn); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .btn-wsp-checkout { background-color: var(--wsp-btn); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-checkout { background-color: var(--primary-btn); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; }
 
         /* Estado del pedido */
         .order-status-screen { text-align: center; padding: 24px 12px; }
@@ -314,7 +312,7 @@
                 <div id="modalCartList"></div>
 
                 <!-- Formulario con Datos del Cliente -->
-                <form id="orderForm" class="client-form" onsubmit="event.preventDefault(); processInternalOrder();">
+                <form id="orderForm" class="client-form" onsubmit="event.preventDefault(); submitOrder();">
                     <h3>Datos para la Entrega</h3>
                     
                     <div class="form-row">
@@ -355,12 +353,11 @@
             </div>
 
             <div class="modal-footer" id="modalFooter">
-                <div style="display:flex; justify-between; font-weight:800;">
+                <div style="display:flex; justify-content:space-between; font-weight:800; margin-bottom:8px;">
                     <span>Total:</span>
                     <span id="modalTotal">$0</span>
                 </div>
-                <button class="btn-checkout" onclick="submitOrder('cocina')">Enviar Pedido a Cocina 🛍️</button>
-                <button class="btn-wsp-checkout" onclick="submitOrder('whatsapp')">Enviar por WhatsApp 💬</button>
+                <button class="btn-checkout" onclick="submitOrder()">Confirmar y Enviar Pedido 🛍️</button>
             </div>
         </div>
     </div>
@@ -498,18 +495,13 @@
             document.getElementById("cartModal").style.display = "none";
         }
 
-        function submitOrder(destination) {
+        function submitOrder() {
             const form = document.getElementById("orderForm");
             if (!form.checkValidity()) {
                 form.reportValidity();
                 return;
             }
-
-            if (destination === 'cocina') {
-                processInternalOrder();
-            } else if (destination === 'whatsapp') {
-                sendWhatsAppOrder();
-            }
+            processInternalOrder();
         }
 
         function getOrderDetails() {
@@ -559,28 +551,6 @@
 
             if (orderPollInterval) clearInterval(orderPollInterval);
             orderPollInterval = setInterval(() => checkOrderStatus(orderId), 2500);
-        }
-
-        function sendWhatsAppOrder() {
-            const { items, total, cliente } = getOrderDetails();
-            const wspNumber = localStorage.getItem("sushiWspNumber") || "56912345678";
-
-            let msg = `🍣 *NUEVO PEDIDO - SABORES DE TOKIO*\n\n`;
-            msg += `👤 *Cliente:* ${cliente.nombre} ${cliente.apellido}\n`;
-            msg += `📞 *Teléfono:* ${cliente.telefono}\n`;
-            msg += `📧 *Correo:* ${cliente.correo}\n`;
-            msg += `📍 *Dirección:* ${cliente.direccion}\n`;
-            msg += `💳 *Método de Pago:* ${cliente.pago}\n\n`;
-            msg += `🛒 *Detalle del Pedido:*\n`;
-
-            items.forEach(item => {
-                msg += `• ${item.cantidad}x ${item.nombre} - ${formatPrice(item.subtotal)}\n`;
-            });
-
-            msg += `\n💰 *Total:* ${formatPrice(total)}`;
-
-            const url = `https://api.whatsapp.com/send?phone=${wspNumber}&text=${encodeURIComponent(msg)}`;
-            window.open(url, '_blank');
         }
 
         function showWaitingState(orderId) {
