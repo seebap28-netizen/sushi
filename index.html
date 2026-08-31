@@ -71,17 +71,19 @@
             gap: 6px;
         }
 
-        /* Navegación Rápida */
+        /* Navegación Rápida (Corregida para evitar cortes al deslizar) */
         .quick-nav {
             display: flex;
             gap: 8px;
             overflow-x: auto;
             padding-bottom: 8px;
+            padding-right: 16px; /* Aislamiento de margen para que la última pestaña no se corte */
             margin-bottom: 24px;
             max-width: 650px;
             margin-left: auto;
             margin-right: auto;
             scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
         }
 
         .quick-nav::-webkit-scrollbar { display: none; }
@@ -96,6 +98,7 @@
             font-weight: 600;
             border: 1px solid var(--card-border);
             white-space: nowrap;
+            flex-shrink: 0; /* Evita compresión en pantallas pequeñas */
         }
 
         /* Categorías y Productos */
