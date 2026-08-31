@@ -50,6 +50,81 @@
             display: none;
         }
 
+        /* Encabezado */
+        .header-admin {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-header-action {
+            background-color: #4a5568;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-header-action:hover { background-color: #718096; }
+
+        .btn-logout {
+            background-color: var(--accent-color);
+            width: auto;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+        /* Sistema de Pestañas (Tabs) */
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background-color: var(--card-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: auto;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-color);
+            background-color: #2d3748;
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         /* Formulario y Tarjetas */
         .form-card {
             background-color: var(--card-bg);
@@ -103,40 +178,6 @@
         .btn-cancel {
             background-color: #4a5568;
             margin-top: 10px;
-        }
-
-        .header-admin {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-header-action {
-            background-color: #4a5568;
-            color: white;
-            text-decoration: none;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            border-radius: 6px;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .btn-header-action:hover { background-color: #718096; }
-
-        .btn-logout {
-            background-color: var(--accent-color);
-            width: auto;
-            padding: 8px 16px;
-            font-size: 0.85rem;
         }
 
         /* Monitor de Pedidos Cocina */
@@ -272,80 +313,95 @@
             </div>
         </div>
 
-        <!-- Monitor de Pedidos de Cocina en Tiempo Real -->
-        <div class="form-card">
-            <h2>🛎️ Pedidos Entrantes (Monitor Cocina)</h2>
-            <div id="ordersContainer" class="orders-grid">
-                <!-- Se renderizan automáticamente los pedidos -->
+        <!-- Botones de Navegación por Pestañas -->
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="switchTab('tabOrders', this)">🛎️ Pedidos Cocina</button>
+            <button class="tab-btn" onclick="switchTab('tabProducts', this)">🍣 Productos en Carta</button>
+            <button class="tab-btn" id="btnTabForm" onclick="switchTab('tabForm', this)">➕ Agregar Producto</button>
+        </div>
+
+        <!-- Pestaña 1: Monitor de Pedidos -->
+        <div id="tabOrders" class="tab-content active">
+            <div class="form-card">
+                <h2>🛎️ Pedidos Entrantes (Monitor Cocina)</h2>
+                <div id="ordersContainer" class="orders-grid">
+                    <!-- Se renderizan automáticamente los pedidos -->
+                </div>
             </div>
         </div>
 
-        <!-- Formulario CRUD de Productos -->
-        <div class="form-card">
-            <h2 id="formTitle">Agregar Nuevo Producto</h2>
-            <form id="promoForm">
-                <input type="hidden" id="promoId">
-                
-                <div class="form-group">
-                    <label>Categoría</label>
-                    <select id="categoria" required>
-                        <option value="mas-vendidos">🔥 Más Vendidos</option>
-                        <option value="promos">🏷️ Promos</option>
-                        <option value="para-uno">👤 Para Uno</option>
-                        <option value="handrolls">🌯 Handrolls</option>
-                        <option value="gohan">🍚 Gohan</option>
-                        <option value="bebestibles">🥤 Bebestibles</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Nombre del Producto</label>
-                    <input type="text" id="nombre" required placeholder="Ej: Promo 3: Combo Tokio">
-                </div>
-
-                <div class="form-group">
-                    <label>Precio</label>
-                    <input type="text" id="precio" required placeholder="Ej: $12.900">
-                </div>
-
-                <div class="form-group">
-                    <label>Etiqueta / Badge (Opcional)</label>
-                    <input type="text" id="badge" placeholder="Ej: 20% OFF, RECOMENDADO">
-                </div>
-
-                <div class="form-group">
-                    <label>URL de la Imagen</label>
-                    <input type="url" id="imagen" required placeholder="https://ejemplo.com/imagen.jpg">
-                </div>
-
-                <div class="form-group">
-                    <label>Descripción</label>
-                    <textarea id="descripcion" rows="3" required placeholder="Detalla los ingredientes y piezas..."></textarea>
-                </div>
-
-                <button type="submit" id="btnSave">Guardar Producto</button>
-                <button type="button" class="btn-cancel" id="btnCancel" onclick="resetForm()" style="display:none;">Cancelar</button>
-            </form>
+        <!-- Pestaña 2: Productos en Carta -->
+        <div id="tabProducts" class="tab-content">
+            <div class="form-card">
+                <h2>Productos en Carta</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <th>Categoría</th>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody"></tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- Tabla de Productos -->
-        <h2>Productos en Carta</h2>
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Imagen</th>
-                    <th>Categoría</th>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="adminTableBody"></tbody>
-        </table>
+        <!-- Pestaña 3: Formulario CRUD de Productos -->
+        <div id="tabForm" class="tab-content">
+            <div class="form-card">
+                <h2 id="formTitle">Agregar Nuevo Producto</h2>
+                <form id="promoForm">
+                    <input type="hidden" id="promoId">
+                    
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="categoria" required>
+                            <option value="mas-vendidos">🔥 Más Vendidos</option>
+                            <option value="promos">🏷️ Promos</option>
+                            <option value="para-uno">👤 Para Uno</option>
+                            <option value="handrolls">🌯 Handrolls</option>
+                            <option value="gohan">🍚 Gohan</option>
+                            <option value="bebestibles">🥤 Bebestibles</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nombre del Producto</label>
+                        <input type="text" id="nombre" required placeholder="Ej: Promo 3: Combo Tokio">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Precio</label>
+                        <input type="text" id="precio" required placeholder="Ej: $12.900">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Etiqueta / Badge (Opcional)</label>
+                        <input type="text" id="badge" placeholder="Ej: 20% OFF, RECOMENDADO">
+                    </div>
+
+                    <div class="form-group">
+                        <label>URL de la Imagen</label>
+                        <input type="url" id="imagen" required placeholder="https://ejemplo.com/imagen.jpg">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea id="descripcion" rows="3" required placeholder="Detalla los ingredientes y piezas..."></textarea>
+                    </div>
+
+                    <button type="submit" id="btnSave">Guardar Producto</button>
+                    <button type="button" class="btn-cancel" id="btnCancel" onclick="resetForm()" style="display:none;">Cancelar</button>
+                </form>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // Credenciales de Acceso
         const ADMIN_USER = "admin";
         const ADMIN_PASS = "sushi123";
 
@@ -360,6 +416,14 @@
 
         let ordersPollInterval = null;
 
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            btnElement.classList.add('active');
+        }
+
         function checkAuth() {
             const isAuth = sessionStorage.getItem("sushiAdminAuth");
             if (isAuth === "true") {
@@ -368,7 +432,6 @@
                 renderAdminTable();
                 renderOrders();
                 
-                // Actualiza el monitor de cocina en tiempo real (cada 2 segundos)
                 if (ordersPollInterval) clearInterval(ordersPollInterval);
                 ordersPollInterval = setInterval(renderOrders, 2000);
             } else {
@@ -418,7 +481,6 @@
                         </span>
                     </div>
 
-                    <!-- Datos del cliente entregados desde index.html -->
                     <div class="client-info-box">
                         <div><strong>Cliente:</strong> ${c.nombre || ''} ${c.apellido || ''}</div>
                         <div><strong>Teléfono:</strong> ${c.telefono || '-'}</div>
@@ -504,6 +566,10 @@
 
             saveToStorage();
             resetForm();
+            
+            // Redirigir automáticamente a la pestaña de productos
+            const btnProducts = document.querySelectorAll('.tab-btn')[1];
+            switchTab('tabProducts', btnProducts);
         });
 
         function editPromo(id) {
@@ -521,6 +587,11 @@
             document.getElementById("formTitle").innerText = "Modificar Producto";
             document.getElementById("btnSave").innerText = "Actualizar Producto";
             document.getElementById("btnCancel").style.display = "block";
+
+            // Cambiar a la pestaña del formulario al editar
+            const btnForm = document.getElementById("btnTabForm");
+            btnForm.innerText = "✏️ Editar Producto";
+            switchTab('tabForm', btnForm);
         }
 
         function deletePromo(id) {
@@ -536,6 +607,7 @@
             document.getElementById("formTitle").innerText = "Agregar Nuevo Producto";
             document.getElementById("btnSave").innerText = "Guardar Producto";
             document.getElementById("btnCancel").style.display = "none";
+            document.getElementById("btnTabForm").innerText = "➕ Agregar Producto";
         }
 
         checkAuth();
