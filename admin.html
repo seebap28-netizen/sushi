@@ -3,470 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Admin - Menú Sushi</title>
+    <title>Panel Admin - Monitor de Cocina</title>
     <style>
         :root {
-            --bg-color: #0f1115;
-            --card-bg: #1a202c;
-            --accent-color: #e53e3e;
-            --approve-color: #3fb950;
-            --text-color: #f7fafc;
-            --text-secondary: #a0aec0;
-            --border-color: #2d3748;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             padding: 20px;
-            max-width: 950px;
-            margin: 0 auto;
         }
 
-        h1, h2 { color: var(--accent-color); }
-
-        /* Pantalla de Login */
-        .login-container {
-            max-width: 380px;
-            margin: 80px auto;
-            background-color: var(--card-bg);
-            padding: 30px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            text-align: center;
-        }
-
-        .login-container h2 {
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
-
-        .error-message {
-            color: #fc8181;
-            font-size: 0.85rem;
-            margin-bottom: 15px;
-            display: none;
-        }
-
-        /* Encabezado */
-        .header-admin {
+        header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-header-action {
-            background-color: #4a5568;
-            color: white;
-            text-decoration: none;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            border-radius: 6px;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .btn-header-action:hover { background-color: #718096; }
-
-        .btn-logout {
-            background-color: var(--accent-color);
-            width: auto;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-        }
-
-        /* Sistema de Pestañas (Tabs) */
-        .admin-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-
-        .tab-btn {
-            background-color: var(--card-bg);
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            width: auto;
-            transition: all 0.2s ease;
-        }
-
-        .tab-btn:hover {
-            color: var(--text-color);
-            background-color: #2d3748;
-        }
-
-        .tab-btn.active {
-            background-color: var(--accent-color);
-            color: white;
-            border-color: var(--accent-color);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Formulario y Tarjetas */
-        .form-card {
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
             margin-bottom: 25px;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
+        header h1 {
+            color: var(--accent);
+            font-size: 1.5rem;
         }
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
+        .refresh-btn {
+            background-color: var(--card-bg);
+            color: var(--text-main);
             border: 1px solid var(--border-color);
-            background-color: var(--bg-color);
-            color: #fff;
-            box-sizing: border-box;
-            font-family: inherit;
-        }
-
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--accent-color);
-        }
-
-        button {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-radius: 6px;
-            font-weight: bold;
             cursor: pointer;
-            width: 100%;
+            font-weight: bold;
         }
 
-        button:hover { opacity: 0.9; }
-
-        .btn-cancel {
-            background-color: #4a5568;
-            margin-top: 10px;
+        .refresh-btn:hover {
+            background-color: var(--border-color);
         }
 
-        /* Monitor de Pedidos Cocina */
-        .orders-grid {
+        .orders-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-            margin-bottom: 10px;
+            gap: 20px;
         }
 
         .order-card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
+            border-radius: 10px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            justify-content: space-between;
         }
 
         .order-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 12px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
-            font-weight: bold;
         }
 
-        .order-id { color: var(--accent-color); font-size: 0.95rem; }
+        .order-id {
+            font-weight: bold;
+            color: var(--accent);
+        }
 
         .order-status {
-            font-size: 0.75rem;
-            padding: 2px 6px;
+            padding: 4px 8px;
             border-radius: 4px;
-            background-color: #d29922;
-            color: #000;
-            font-weight: 800;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
         }
 
         .client-info-box {
-            background-color: var(--bg-color);
-            padding: 8px 10px;
+            background-color: var(--bg-dark);
+            padding: 10px;
             border-radius: 6px;
-            font-size: 0.8rem;
-            color: var(--text-color);
+            margin-bottom: 12px;
+            font-size: 0.9rem;
             line-height: 1.4;
-            border: 1px solid var(--border-color);
         }
 
-        .client-info-box strong { color: var(--accent-color); }
+        .client-info-box a {
+            color: var(--accent);
+            text-decoration: none;
+        }
 
         .order-items-list {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin: 0;
-            padding-left: 18px;
+            list-style: none;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .order-items-list li {
+            padding: 4px 0;
+            border-bottom: 1px dashed var(--border-color);
         }
 
         .order-total {
+            font-size: 1.1rem;
             font-weight: bold;
             text-align: right;
-            font-size: 1.05rem;
-            color: #fff;
-            margin-top: 4px;
+            margin-bottom: 15px;
+            color: var(--success);
         }
 
         .order-actions {
             display: flex;
-            gap: 8px;
-            margin-top: 5px;
+            gap: 10px;
         }
 
-        .btn-approve { background-color: var(--approve-color); color: #000; font-size: 0.8rem; }
-        .btn-reject { background-color: var(--accent-color); color: #fff; font-size: 0.8rem; }
-
-        /* Tabla de Productos */
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            overflow: hidden;
+        .btn-approve {
+            flex: 1;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
         }
 
-        .admin-table th, .admin-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .admin-table th { background-color: #2d3748; }
-
-        .btn-edit { background-color: #3182ce; padding: 5px 10px; font-size: 0.8rem; width: auto; }
-        .btn-delete { background-color: var(--accent-color); padding: 5px 10px; font-size: 0.8rem; width: auto; }
-        .thumb-img { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
-        
-        .badge-cat {
-            background-color: #2d3748;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
+        .btn-reject {
+            flex: 1;
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <!-- 1. PANTALLA DE LOG IN -->
-    <div id="loginScreen" class="login-container">
-        <h2>Acceso Administrador</h2>
-        <div id="loginError" class="error-message">Usuario o contraseña incorrectos</div>
-        <form id="loginForm">
-            <div class="form-group">
-                <label>Usuario</label>
-                <input type="text" id="userInput" required placeholder="Ingresa usuario">
-            </div>
-            <div class="form-group">
-                <label>Contraseña</label>
-                <input type="password" id="passInput" required placeholder="Ingresa contraseña">
-            </div>
-            <button type="submit">Iniciar Sesión</button>
-        </form>
-    </div>
+    <header>
+        <h1>👨‍🍳 Monitor de Cocina / Administración</h1>
+        <button class="refresh-btn" onclick="renderOrders()">🔄 Actualizar Pedidos</button>
+    </header>
 
-    <!-- 2. PANEL DE ADMINISTRACIÓN -->
-    <div id="adminPanel" style="display: none;">
-        <div class="header-admin">
-            <h1>Panel de Administración</h1>
-            <div class="header-actions">
-                <a href="index.html" class="btn-header-action">🍣 Ver Menú</a>
-                <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
-            </div>
+    <main>
+        <div class="orders-container" id="ordersContainer">
+            <!-- Las tarjetas de pedidos se cargarán aquí -->
         </div>
-
-        <!-- Botones de Navegación por Pestañas -->
-        <div class="admin-tabs">
-            <button class="tab-btn active" onclick="switchTab('tabOrders', this)">🛎️ Pedidos Cocina</button>
-            <button class="tab-btn" onclick="switchTab('tabProducts', this)">🍣 Productos en Carta</button>
-            <button class="tab-btn" id="btnTabForm" onclick="switchTab('tabForm', this)">➕ Agregar Producto</button>
-        </div>
-
-        <!-- Pestaña 1: Monitor de Pedidos -->
-        <div id="tabOrders" class="tab-content active">
-            <div class="form-card">
-                <h2>🛎️ Pedidos Entrantes (Monitor Cocina)</h2>
-                <div id="ordersContainer" class="orders-grid">
-                    <!-- Se renderizan automáticamente los pedidos -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Pestaña 2: Productos en Carta -->
-        <div id="tabProducts" class="tab-content">
-            <div class="form-card">
-                <h2>Productos en Carta</h2>
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Imagen</th>
-                            <th>Categoría</th>
-                            <th>Nombre</th>
-                            <th>Precio</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Pestaña 3: Formulario CRUD de Productos -->
-        <div id="tabForm" class="tab-content">
-            <div class="form-card">
-                <h2 id="formTitle">Agregar Nuevo Producto</h2>
-                <form id="promoForm">
-                    <input type="hidden" id="promoId">
-                    
-                    <div class="form-group">
-                        <label>Categoría</label>
-                        <select id="categoria" required>
-                            <option value="mas-vendidos">🔥 Más Vendidos</option>
-                            <option value="promos">🏷️ Promos</option>
-                            <option value="para-uno">👤 Para Uno</option>
-                            <option value="handrolls">🌯 Handrolls</option>
-                            <option value="gohan">🍚 Gohan</option>
-                            <option value="bebestibles">🥤 Bebestibles</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nombre del Producto</label>
-                        <input type="text" id="nombre" required placeholder="Ej: Promo 3: Combo Tokio">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Precio</label>
-                        <input type="text" id="precio" required placeholder="Ej: $12.900">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Etiqueta / Badge (Opcional)</label>
-                        <input type="text" id="badge" placeholder="Ej: 20% OFF, RECOMENDADO">
-                    </div>
-
-                    <div class="form-group">
-                        <label>URL de la Imagen</label>
-                        <input type="url" id="imagen" required placeholder="https://ejemplo.com/imagen.jpg">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Descripción</label>
-                        <textarea id="descripcion" rows="3" required placeholder="Detalla los ingredientes y piezas..."></textarea>
-                    </div>
-
-                    <button type="submit" id="btnSave">Guardar Producto</button>
-                    <button type="button" class="btn-cancel" id="btnCancel" onclick="resetForm()" style="display:none;">Cancelar</button>
-                </form>
-            </div>
-        </div>
-
-    </div>
+    </main>
 
     <script>
-        const ADMIN_USER = "admin";
-        const ADMIN_PASS = "sushi123";
-
-        const categoryLabels = {
-            'mas-vendidos': '🔥 Más Vendidos',
-            'promos': '🏷️ Promos',
-            'para-uno': '👤 Para Uno',
-            'handrolls': '🌯 Handrolls',
-            'gohan': '🍚 Gohan',
-            'bebestibles': '🥤 Bebestibles'
-        };
-
-        let ordersPollInterval = null;
-
-        function switchTab(tabId, btnElement) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-
-            document.getElementById(tabId).classList.add('active');
-            btnElement.classList.add('active');
-        }
-
-        function checkAuth() {
-            const isAuth = sessionStorage.getItem("sushiAdminAuth");
-            if (isAuth === "true") {
-                document.getElementById("loginScreen").style.display = "none";
-                document.getElementById("adminPanel").style.display = "block";
-                renderAdminTable();
-                renderOrders();
-                
-                if (ordersPollInterval) clearInterval(ordersPollInterval);
-                ordersPollInterval = setInterval(renderOrders, 2000);
-            } else {
-                document.getElementById("loginScreen").style.display = "block";
-                document.getElementById("adminPanel").style.display = "none";
-                if (ordersPollInterval) clearInterval(ordersPollInterval);
-            }
-        }
-
-        document.getElementById("loginForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-            const user = document.getElementById("userInput").value;
-            const pass = document.getElementById("passInput").value;
-
-            if (user === ADMIN_USER && pass === ADMIN_PASS) {
-                sessionStorage.setItem("sushiAdminAuth", "true");
-                document.getElementById("loginError").style.display = "none";
-                checkAuth();
-            } else {
-                document.getElementById("loginError").style.display = "block";
-            }
-        });
-
-        function logout() {
-            sessionStorage.removeItem("sushiAdminAuth");
-            checkAuth();
-        }
-
-        // Gestión del Monitor de Pedidos de Cocina
         function renderOrders() {
             const ordersContainer = document.getElementById("ordersContainer");
             const orders = JSON.parse(localStorage.getItem("sushiInternalOrders")) || [];
 
             if (orders.length === 0) {
-                ordersContainer.innerHTML = `<p style="color: var(--text-secondary); grid-column: 1/-1;">No hay pedidos pendientes en este momento.</p>`;
+                ordersContainer.innerHTML = `<p style="color: var(--text-secondary); grid-column: 1/-1;">No hay pedidos en este momento.</p>`;
                 return;
             }
 
@@ -474,143 +184,61 @@
                 const c = order.cliente || {};
                 return `
                 <div class="order-card">
-                    <div class="order-card-header">
-                        <span class="order-id">${order.id}</span>
-                        <span class="order-status" style="background-color: ${order.estado === 'Aprobado' ? '#3fb950' : '#d29922'}">
-                            ${order.estado}
-                        </span>
-                    </div>
-
-                    <div class="client-info-box">
-                        <div><strong>Cliente:</strong> ${c.nombre || ''} ${c.apellido || ''}</div>
-                        <div><strong>Teléfono:</strong> ${c.telefono || '-'}</div>
-                        <div><strong>Correo:</strong> ${c.correo || '-'}</div>
-                        <div><strong>Dirección:</strong> ${c.direccion || '-'}</div>
-                        <div><strong>Pago:</strong> ${c.pago || '-'}</div>
-                    </div>
-
-                    <ul class="order-items-list">
-                        ${order.items.map(i => `<li><b>${i.cantidad}x</b> ${i.nombre}</li>`).join('')}
-                    </ul>
-
-                    <div class="order-total">$${order.total.toLocaleString('es-CL')}</div>
-
-                    ${order.estado === 'Pendiente' ? `
-                        <div class="order-actions">
-                            <button class="btn-approve" onclick="updateOrderStatus('${order.id}', 'Aprobado')">Aprobar</button>
-                            <button class="btn-reject" onclick="deleteOrder('${order.id}')">Rechazar</button>
+                    <div>
+                        <div class="order-card-header">
+                            <span class="order-id">${order.id}</span>
+                            <span class="order-status" style="background-color: ${order.estado === 'Aprobado' ? '#22c55e' : '#f59e0b'}">
+                                ${order.estado}
+                            </span>
                         </div>
-                    ` : `
-                        <button class="btn-reject" style="background-color: #4a5568;" onclick="deleteOrder('${order.id}')">Limpiar</button>
-                    `}
+
+                        <div class="client-info-box">
+                            <div><strong>Cliente:</strong> ${c.nombre || '-'}</div>
+                            <div><strong>Teléfono:</strong> <a href="tel:${c.telefono}">${c.telefono || '-'}</a></div>
+                            <div><strong>Correo:</strong> ${c.correo || '-'}</div>
+                            <div><strong>Dirección:</strong> ${c.direccion || '-'}</div>
+                            <div><strong>Pago:</strong> ${c.pago || '-'}</div>
+                        </div>
+
+                        <ul class="order-items-list">
+                            ${order.items.map(i => `<li><b>${i.cantidad}x</b> ${i.nombre}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="order-total">$${order.total.toLocaleString('es-CL')}</div>
+
+                        ${order.estado === 'Pendiente' ? `
+                            <div class="order-actions">
+                                <button class="btn-approve" onclick="updateOrderStatus('${order.id}', 'Aprobado')">Aprobar</button>
+                                <button class="btn-reject" onclick="deleteOrder('${order.id}')">Rechazar</button>
+                            </div>
+                        ` : `
+                            <button class="btn-reject" style="width: 100%; background-color: #4a5568;" onclick="deleteOrder('${order.id}')">Limpiar de Pantalla</button>
+                        `}
+                    </div>
                 </div>
-            `}).join('');
+            `;
+            }).join('');
         }
 
-        function updateOrderStatus(orderId, status) {
+        function updateOrderStatus(id, newStatus) {
             let orders = JSON.parse(localStorage.getItem("sushiInternalOrders")) || [];
-            orders = orders.map(o => o.id === orderId ? { ...o, estado: status } : o);
+            orders = orders.map(o => o.id === id ? { ...o, estado: newStatus } : o);
             localStorage.setItem("sushiInternalOrders", JSON.stringify(orders));
             renderOrders();
         }
 
-        function deleteOrder(orderId) {
+        function deleteOrder(id) {
             let orders = JSON.parse(localStorage.getItem("sushiInternalOrders")) || [];
-            orders = orders.filter(o => o.id !== orderId);
+            orders = orders.filter(o => o.id !== id);
             localStorage.setItem("sushiInternalOrders", JSON.stringify(orders));
             renderOrders();
         }
 
-        // CRUD de Productos
-        let promos = JSON.parse(localStorage.getItem("sushiPromos")) || [];
-
-        function saveToStorage() {
-            localStorage.setItem("sushiPromos", JSON.stringify(promos));
-            renderAdminTable();
-        }
-
-        function renderAdminTable() {
-            const tbody = document.getElementById("adminTableBody");
-            tbody.innerHTML = promos.map(promo => `
-                <tr>
-                    <td><img src="${promo.imagen}" class="thumb-img"></td>
-                    <td><span class="badge-cat">${categoryLabels[promo.categoria] || 'Promos'}</span></td>
-                    <td><b>${promo.nombre}</b></td>
-                    <td>${promo.precio}</td>
-                    <td>
-                        <button class="btn-edit" onclick="editPromo(${promo.id})">Editar</button>
-                        <button class="btn-delete" onclick="deletePromo(${promo.id})">Eliminar</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        document.getElementById("promoForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-            const id = document.getElementById("promoId").value;
-            const newPromo = {
-                id: id ? parseInt(id) : Date.now(),
-                categoria: document.getElementById("categoria").value,
-                nombre: document.getElementById("nombre").value,
-                precio: document.getElementById("precio").value,
-                badge: document.getElementById("badge").value,
-                imagen: document.getElementById("imagen").value,
-                descripcion: document.getElementById("descripcion").value
-            };
-
-            if (id) {
-                promos = promos.map(p => p.id === parseInt(id) ? newPromo : p);
-            } else {
-                promos.push(newPromo);
-            }
-
-            saveToStorage();
-            resetForm();
-            
-            // Redirigir automáticamente a la pestaña de productos
-            const btnProducts = document.querySelectorAll('.tab-btn')[1];
-            switchTab('tabProducts', btnProducts);
-        });
-
-        function editPromo(id) {
-            const promo = promos.find(p => p.id === id);
-            if (!promo) return;
-
-            document.getElementById("promoId").value = promo.id;
-            document.getElementById("categoria").value = promo.categoria || "promos";
-            document.getElementById("nombre").value = promo.nombre;
-            document.getElementById("precio").value = promo.precio;
-            document.getElementById("badge").value = promo.badge || '';
-            document.getElementById("imagen").value = promo.imagen;
-            document.getElementById("descripcion").value = promo.descripcion;
-
-            document.getElementById("formTitle").innerText = "Modificar Producto";
-            document.getElementById("btnSave").innerText = "Actualizar Producto";
-            document.getElementById("btnCancel").style.display = "block";
-
-            // Cambiar a la pestaña del formulario al editar
-            const btnForm = document.getElementById("btnTabForm");
-            btnForm.innerText = "✏️ Editar Producto";
-            switchTab('tabForm', btnForm);
-        }
-
-        function deletePromo(id) {
-            if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
-                promos = promos.filter(p => p.id !== id);
-                saveToStorage();
-            }
-        }
-
-        function resetForm() {
-            document.getElementById("promoForm").reset();
-            document.getElementById("promoId").value = "";
-            document.getElementById("formTitle").innerText = "Agregar Nuevo Producto";
-            document.getElementById("btnSave").innerText = "Guardar Producto";
-            document.getElementById("btnCancel").style.display = "none";
-            document.getElementById("btnTabForm").innerText = "➕ Agregar Producto";
-        }
-
-        checkAuth();
+        // Cargar automáticamente al entrar y recargar cada 10 segundos
+        renderOrders();
+        setInterval(renderOrders, 10000);
     </script>
 </body>
 </html>
